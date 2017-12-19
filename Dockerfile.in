@@ -5,6 +5,9 @@ ENV ARCH_VERSION ${VERSION}
 
 ENV REFRESHED_AT ${DATE}
 
+# Enable multilib repository
+# RUN [ "/usr/sbin/sed", "--in-place", "/^#\\[multilib\\]/,/^#Include = \\/etc\\/pacman.d\\/mirrorlist/ s/^#//", "/etc/pacman.conf" ]
+
 # Update base image to latest
 RUN [ "/usr/bin/pacman", "--sync", "--quiet", "--refresh" ]
 RUN [ "/usr/bin/pacman", "--noconfirm", "--sync", "--quiet", "archlinux-keyring" ]
