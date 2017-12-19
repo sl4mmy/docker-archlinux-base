@@ -1,0 +1,18 @@
+# Version 0.0.1
+FROM archlinux/base
+
+ENV ARCH_VERSION ${VERSION}
+
+ENV REFRESHED_AT ${DATE}
+
+# Update base image to latest
+RUN [ "/usr/bin/pacman", "--sync", "--quiet", "--refresh" ]
+RUN [ "/usr/bin/pacman", "--noconfirm", "--sync", "--quiet", "archlinux-keyring" ]
+RUN [ "/usr/bin/pacman", "--noconfirm", "--sync", "--quiet", "pacman-mirrorlist" ]
+RUN [ "/usr/bin/pacman", "--noconfirm", "--sync", "--quiet", "--sysupgrade" ]
+
+# Ensure downstream images stay up to date
+ONBUILD RUN [ "/usr/bin/pacman", "--sync", "--quiet", "--refresh" ]
+ONBUILD RUN [ "/usr/bin/pacman", "--noconfirm", "--sync", "--quiet", "archlinux-keyring" ]
+ONBUILD RUN [ "/usr/bin/pacman", "--noconfirm", "--sync", "--quiet", "pacman-mirrorlist" ]
+ONBUILD RUN [ "/usr/bin/pacman", "--noconfirm", "--sync", "--quiet", "--sysupgrade" ]
