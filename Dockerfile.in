@@ -1,20 +1,28 @@
-# Version 0.0.1
+# Version 0.1.0
 FROM archlinux/base
 
 ENV ARCH_VERSION ${VERSION}
 
+ENV MIRRORS_COUNTRY ${COUNTRY}
 ENV REFRESHED_AT ${DATE}
 
 # Enable multilib repository
 # RUN [ "/usr/sbin/sed", "--in-place", "/^#\\[multilib\\]/,/^#Include = \\/etc\\/pacman.d\\/mirrorlist/ s/^#//", "/etc/pacman.conf" ]
 
-# Update base image to latest
+# Initialize repositories
 RUN [ "/usr/bin/pacman", "--sync", "--quiet", "--refresh" ]
 RUN [ "/usr/bin/pacman", "--noconfirm", "--sync", "--quiet", "archlinux-keyring" ]
-RUN [ "/usr/bin/pacman", "--noconfirm", "--sync", "--quiet", "pacman-mirrorlist" ]
+
+# Install & run reflector to update the mirror list
+RUN [ "/usr/bin/pacman", "--noconfirm", "--sync", "--quiet", "pacman-mirrorlist", "reflector" ]
+RUN [ "/usr/bin/reflector", "--save", "/etc/pacman.d/mirrorlist", "--sort", "rate", "--age", "6", "--country", "${COUNTRY}", "--fastest", "10", "--latest", "10", "--number", "10", "--protocol", "http" ]
+
+# Update base image packages
+RUN [ "/usr/bin/pacman", "--sync", "--quiet", "--refresh" ]
 RUN [ "/usr/bin/pacman", "--noconfirm", "--sync", "--quiet", "--sysupgrade" ]
 
 # Ensure downstream images stay up to date
+ONBUILD RUN [ "/usr/bin/reflector", "--save", "/etc/pacman.d/mirrorlist", "--sort", "rate", "--age", "6", "--country", "${COUNTRY}", "--fastest", "10", "--latest", "10", "--number", "10", "--protocol", "http" ]
 ONBUILD RUN [ "/usr/bin/pacman", "--sync", "--quiet", "--refresh" ]
 ONBUILD RUN [ "/usr/bin/pacman", "--noconfirm", "--sync", "--quiet", "archlinux-keyring" ]
 ONBUILD RUN [ "/usr/bin/pacman", "--noconfirm", "--sync", "--quiet", "pacman-mirrorlist" ]
