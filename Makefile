@@ -21,10 +21,15 @@ Dockerfile.multilib: Dockerfile.in
 attach:
 	docker run --interactive=true --tty=true --rm=true --name="$(NAME)-$(VERSION)-attach" --entrypoint=/bin/bash "$(DOCKER_REPOSITORY)/$(NAME):$(VERSION)"
 
+refresh: Dockerfile.in
+	sed "s/\$${VERSION}/$(VERSION)/; s/\$${DATE}/$(DATE)/; s/\$${COUNTRY}/$(COUNTRY)/" $(<) >Dockerfile
+	sed "s/^FROM archlinux\\/base/FROM $(DOCKER_REPOSITORY)\\/$(NAME):$(VERSION)/; s/\$${VERSION}/$(VERSION)/; s/\$${DATE}/$(DATE)/; s/\$${COUNTRY}/$(COUNTRY)/; /^# Enable multilib repository/,/^# RUN / s/^# RUN/RUN/" $(<) >Dockerfile.multilib
+	$(MAKE)
+
 run:
 	docker run --interactive=true --tty=true --rm=true --name="$(NAME)-$(VERSION)-run" "$(DOCKER_REPOSITORY)/$(NAME):$(VERSION)"
 
 clean:
 	-rm Dockerfile Dockerfile.multilib
 
-.PHONY: all attach clean run
+.PHONY: all attach clean refresh run
