@@ -1,5 +1,5 @@
 NAME = archlinux-base
-VERSION = 2017.12
+VERSION = `/bin/date +%Y.%m`
 
 DATE = `/bin/date +%Y-%m-%d`
 
