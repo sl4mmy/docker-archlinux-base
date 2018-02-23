@@ -12,10 +12,10 @@ all: Dockerfile Dockerfile.multilib
 	docker build --rm=true --tag="$(DOCKER_REPOSITORY)/$(NAME):$(VERSION)" $(DOCKER_FLAGS) .
 	docker build --rm=true --tag="$(DOCKER_REPOSITORY)/$(NAME)-multilib:$(VERSION)" $(DOCKER_FLAGS) -f Dockerfile.multilib .
 
-Dockerfile: Dockerfile.in
+Dockerfile: Dockerfile.in Makefile
 	sed "s/\$${VERSION}/$(VERSION)/; s/\$${DATE}/$(DATE)/; s/\$${COUNTRY}/$(COUNTRY)/" $(<) >$(@)
 
-Dockerfile.multilib: Dockerfile.in
+Dockerfile.multilib: Dockerfile.in Makefile
 	sed "s/^FROM archlinux\\/base$$/FROM $(DOCKER_REPOSITORY)\\/$(NAME):$(VERSION)/; s/\$${VERSION}/$(VERSION)/; s/\$${DATE}/$(DATE)/; s/\$${COUNTRY}/$(COUNTRY)/; /^# Enable multilib repository$$/,/^# RUN / s/^# RUN/RUN/" $(<) >$(@)
 
 attach:
