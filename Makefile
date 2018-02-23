@@ -30,6 +30,6 @@ run:
 	docker run --interactive=true --tty=true --rm=true --name="$(NAME)-$(VERSION)-run" "$(DOCKER_REPOSITORY)/$(NAME):$(VERSION)"
 
 clean:
-	-rm Dockerfile Dockerfile.multilib
+	-rm -f Dockerfile Dockerfile.multilib
 
 .PHONY: all attach clean refresh run
