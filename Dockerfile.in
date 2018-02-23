@@ -1,4 +1,3 @@
-# Version 0.1.0
 FROM archlinux/base
 
 ENV ARCH_VERSION ${VERSION}
