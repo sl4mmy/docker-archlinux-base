@@ -28,14 +28,14 @@ RUN [ "/usr/bin/pacman", "--noconfirm", "--sync", "--quiet", "archlinux-keyring"
 
 # Install & run reflector to update the mirror list
 RUN [ "/usr/bin/pacman", "--noconfirm", "--sync", "--quiet", "pacman-mirrorlist", "reflector" ]
-RUN [ "/usr/bin/reflector", "--save", "/etc/pacman.d/mirrorlist", "--sort", "rate", "--age", "6", "--country", "${COUNTRY}", "--fastest", "10", "--latest", "10", "--number", "10", "--protocol", "http" ]
+RUN [ "/usr/bin/reflector", "--save", "/etc/pacman.d/mirrorlist", "--sort", "rate", "--age", "6", "--country", "${COUNTRY}", "--fastest", "10", "--latest", "10", "--number", "10", "--protocol", "http", "--protocol", "https" ]
 
 # Update base image packages
 RUN [ "/usr/bin/pacman", "--sync", "--quiet", "--refresh" ]
 RUN [ "/usr/bin/pacman", "--noconfirm", "--sync", "--quiet", "--sysupgrade" ]
 
 # Ensure downstream images stay up to date
-ONBUILD RUN [ "/usr/bin/reflector", "--save", "/etc/pacman.d/mirrorlist", "--sort", "rate", "--age", "6", "--country", "${COUNTRY}", "--fastest", "10", "--latest", "10", "--number", "10", "--protocol", "http" ]
+ONBUILD RUN [ "/usr/bin/reflector", "--save", "/etc/pacman.d/mirrorlist", "--sort", "rate", "--age", "6", "--country", "${COUNTRY}", "--fastest", "10", "--latest", "10", "--number", "10", "--protocol", "http", "--protocol", "https" ]
 ONBUILD RUN [ "/usr/bin/pacman", "--sync", "--quiet", "--refresh" ]
 ONBUILD RUN [ "/usr/bin/pacman", "--noconfirm", "--sync", "--quiet", "archlinux-keyring" ]
 ONBUILD RUN [ "/usr/bin/pacman", "--noconfirm", "--sync", "--quiet", "pacman-mirrorlist" ]
